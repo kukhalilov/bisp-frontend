@@ -47,7 +47,7 @@ const Register = () => {
       }
     } else {
       setLoading(false);
-      toast.error("Please action an image in jpeg or png format");
+      toast.error("Please select an image in jpeg or png format");
     }
   };
 

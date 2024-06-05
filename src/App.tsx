@@ -10,9 +10,10 @@ import "./utilities/firebase";
 import { jwtDecode } from "jwt-decode";
 import { getData } from "./api/api";
 import User from "./interfaces/User";
-import { setUserInfo } from "./redux/reducers/rootSlice";
+import { setAuthError, setUserInfo } from "./redux/reducers/rootSlice";
 import { useDispatch } from "react-redux";
 import ScrollToTop from "./components/ScrollToTop";
+import { AxiosError } from "axios";
 
 const Home = lazy(() => import("./pages/Home"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -25,20 +26,27 @@ const Error = lazy(() => import("./pages/Error"));
 
 const App = () => {
   const dispatch = useDispatch();
+  
   const user = localStorage.getItem("token")
     ? jwtDecode<User>(localStorage.getItem("token") || "")
     : null;
 
-  const getUser = async (id?: string) => {
-    try {
-      const user = await getData<User>(`/users/${id}`);
-      dispatch(setUserInfo(user));
-    } catch (error) {
-      return error;
-    }
-  };
+    const getUser = async (id?: string) => {
+      try {
+        const user = await getData<User>(`/users/${id}`);
+        dispatch(setUserInfo(user));
+      } catch (error) {
+          const err = error as AxiosError;
+          console.log("err", err);
+          if (err.response?.status === 401 || err.response?.status === 403 || err.response?.status === 500) {
+            localStorage.removeItem("token");
+            dispatch(setAuthError(true));
+          }
+        return error;
+      }
+    };
 
-  getUser(user?.userId);
+  user && getUser(user.userId);
 
   return (
     <Router>

@@ -4,11 +4,13 @@ import User from "../../interfaces/User";
 interface RootState {
   loading: boolean;
   userInfo: User | null;
+  authError: boolean;
 }
 
 const initialState: RootState = {
   loading: true,
   userInfo: null,
+  authError: false,
 };
 
 const rootSlice = createSlice({
@@ -21,8 +23,11 @@ const rootSlice = createSlice({
     setUserInfo: (state, action: PayloadAction<User | null>) => {
       state.userInfo = action.payload;
     },
+    setAuthError: (state, action: PayloadAction<boolean>) => {
+      state.authError = action.payload;
+    },
   },
 });
 
-export const { setLoading, setUserInfo } = rootSlice.actions;
+export const { setLoading, setUserInfo, setAuthError } = rootSlice.actions;
 export default rootSlice.reducer;

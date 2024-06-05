@@ -18,19 +18,21 @@ const Notifications = () => {
   const userInfo = useSelector((state: RootState) => state.root.userInfo);
 
   const getAllNotifications = async () => {
-    try {
-      dispatch(setLoading(true));
-      const temp = await getData<Notification[]>(
-        `/notifications/${userInfo?._id}`
-      );
-      dispatch(setLoading(false));
-      setNotifications(temp);
-    } catch (error) {}
+    if (userInfo) {
+      try {
+        dispatch(setLoading(true));
+        const temp = await getData<Notification[]>(
+          `/notifications/${userInfo?._id}`
+        );
+        dispatch(setLoading(false));
+        setNotifications(temp);
+      } catch (error) {}
+    }
   };
 
   useEffect(() => {
-    userInfo && getAllNotifications();
-  }, []);
+    getAllNotifications();
+  }, [userInfo]);
 
   return (
     <>

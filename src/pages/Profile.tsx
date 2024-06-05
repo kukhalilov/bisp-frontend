@@ -9,8 +9,10 @@ import { getData, putData } from "../api/api";
 import { RootState } from "../redux/store";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 interface FormDetails {
+  pic?: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -28,6 +30,7 @@ const Profile: React.FC = () => {
   const user = useSelector((state: RootState) => state.root.userInfo);
   const [file, setFile] = useState("");
   const [formDetails, setFormDetails] = useState<FormDetails>({
+    pic: "",
     firstName: "",
     lastName: "",
     email: "",
@@ -38,24 +41,26 @@ const Profile: React.FC = () => {
   });
 
   const getUser = async () => {
-    try {
-      dispatch(setLoading(true));
-      const temp = await getData<User>(`/users/${user?._id}`);
-      setFormDetails({
-        ...temp,
-        mobile: temp.mobile ? temp.mobile : "",
-        age: temp.age ? temp.age : "",
-        gender: temp.gender ? temp.gender : "",
-        address: temp.address ? temp.address : "",
-      });
-      setFile(temp.pic);
-      dispatch(setLoading(false));
-    } catch (error) {}
+    if (user) {
+      try {
+        dispatch(setLoading(true));
+        const temp = await getData<User>(`/users/${user?._id}`);
+        setFormDetails({
+          ...temp,
+          mobile: temp.mobile ? temp.mobile : "",
+          age: temp.age ? temp.age : "",
+          gender: temp.gender ? temp.gender : "",
+          address: temp.address ? temp.address : "",
+        });
+        setFile(temp.pic);
+        dispatch(setLoading(false));
+      } catch (error) {}
+    }
   };
 
   useEffect(() => {
     getUser();
-  }, []);
+  }, [user]);
 
   const inputChange = (
     e: React.ChangeEvent<
@@ -67,6 +72,34 @@ const Profile: React.FC = () => {
       ...formDetails,
       [name]: value,
     });
+  };
+
+  const storage = getStorage();
+
+  const onUpload = async (element: File) => {
+    setLoading(true);
+
+    if (element.type === "image/jpeg" || element.type === "image/png") {
+      try {
+        const filename = `${Date.now()}_${element.name}`;
+        const fileRef = ref(storage, filename);
+        await uploadBytes(fileRef, element);
+
+        const downloadURL = await getDownloadURL(fileRef);
+
+        setFile(downloadURL);
+
+        setLoading(false);
+
+        return downloadURL;
+      } catch (error) {
+        console.error("Error uploading file to Firebase Storage:", error);
+        setLoading(false);
+      }
+    } else {
+      setLoading(false);
+      toast.error("Please select an image in jpeg or png format");
+    }
   };
 
   const formSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
@@ -96,7 +129,21 @@ const Profile: React.FC = () => {
         return toast.error("Passwords do not match");
       }
 
+      const formElement = e.target as HTMLFormElement;
+      const fileInput = formElement.elements.namedItem(
+        "profile-pic"
+      ) as HTMLInputElement;
+    
+      let pic: string | undefined;
+      if (fileInput) {
+        const actionedFile = fileInput.files?.[0];
+        if (actionedFile) {
+          pic = await onUpload(actionedFile);
+        }
+      }
+
       const profileData: FormDetails = {
+        pic,
         firstName,
         lastName,
         age,
@@ -131,95 +178,103 @@ const Profile: React.FC = () => {
       {loading ? (
         <Loading />
       ) : (
-        <section className='container notifications-section'>
-          <div className='profile-container flex-center'>
-            <h2 className='form-heading'>Profile</h2>
-            <img src={file} alt='profile' className='profile-pic' />
-            <form onSubmit={formSubmit} className='register-form'>
-              <div className='form-same-row'>
+        <section className="container notifications-section">
+          <div className="profile-container flex-center">
+            <h2 className="form-heading">Profile</h2>
+            <img src={file} alt="profile" className="profile-pic" />
+            <form onSubmit={formSubmit} className="register-form">
+              <div className="form-same-row">
                 <input
-                  type='text'
-                  name='firstName'
-                  className='form-input'
-                  placeholder='Enter your first name'
+                  type="file"
+                  name="profile-pic"
+                  id="profile-pic"
+                  className="form-input"
+                />
+              </div>
+              <div className="form-same-row">
+                <input
+                  type="text"
+                  name="firstName"
+                  className="form-input"
+                  placeholder="Enter your first name"
                   value={formDetails.firstName}
                   onChange={inputChange}
                 />
                 <input
-                  type='text'
-                  name='lastName'
-                  className='form-input'
-                  placeholder='Enter your last name'
+                  type="text"
+                  name="lastName"
+                  className="form-input"
+                  placeholder="Enter your last name"
                   value={formDetails.lastName}
                   onChange={inputChange}
                 />
               </div>
-              <div className='form-same-row'>
+              <div className="form-same-row">
                 <input
-                  type='email'
-                  name='email'
-                  className='form-input'
-                  placeholder='Enter your email'
+                  type="email"
+                  name="email"
+                  className="form-input"
+                  placeholder="Enter your email"
                   value={formDetails.email}
                   onChange={inputChange}
                 />
                 <select
-                  name='gender'
+                  name="gender"
                   value={formDetails.gender}
-                  className='form-input'
-                  id='gender'
+                  className="form-input"
+                  id="gender"
                   onChange={inputChange}
                 >
-                  <option value='neither'>Prefer not to say</option>
-                  <option value='male'>Male</option>
-                  <option value='female'>Female</option>
+                  <option value="neither">Prefer not to say</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
                 </select>
               </div>
-              <div className='form-same-row'>
+              <div className="form-same-row">
                 <input
-                  type='text'
-                  name='age'
-                  className='form-input'
-                  placeholder='Enter your age'
+                  type="text"
+                  name="age"
+                  className="form-input"
+                  placeholder="Enter your age"
                   value={formDetails.age}
                   onChange={inputChange}
                 />
                 <input
-                  type='text'
-                  name='mobile'
-                  className='form-input'
-                  placeholder='Enter your mobile number'
+                  type="text"
+                  name="mobile"
+                  className="form-input"
+                  placeholder="Enter your mobile number"
                   value={formDetails?.mobile}
                   onChange={inputChange}
                 />
               </div>
               <textarea
-                name='address'
-                className='form-input'
-                placeholder='Enter your address'
+                name="address"
+                className="form-input"
+                placeholder="Enter your address"
                 value={formDetails.address}
                 onChange={inputChange}
                 rows={2}
               ></textarea>
-              <div className='form-same-row'>
+              <div className="form-same-row">
                 <input
-                  type='password'
-                  name='password'
-                  className='form-input'
-                  placeholder='Enter your password'
+                  type="password"
+                  name="password"
+                  className="form-input"
+                  placeholder="Enter your password"
                   value={formDetails.password}
                   onChange={inputChange}
                 />
                 <input
-                  type='password'
-                  name='confpassword'
-                  className='form-input'
-                  placeholder='Confirm your password'
+                  type="password"
+                  name="confpassword"
+                  className="form-input"
+                  placeholder="Confirm your password"
                   value={formDetails.confpassword}
                   onChange={inputChange}
                 />
               </div>
-              <button type='submit' className='btn form-btn'>
+              <button type="submit" className="btn form-btn">
                 update
               </button>
             </form>

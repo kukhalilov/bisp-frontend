@@ -18,21 +18,22 @@ const Appointments = () => {
   const loading = useSelector((state: RootState) => state.root.loading);
   const userInfo = useSelector((state: RootState) => state.root.userInfo);
 
-  const getAllAppoint = async () => {
-    try {
-      dispatch(setLoading(true));
-      const temp = await getData<Appointment[]>(
-        `/appointments?search=${userInfo?._id}`
-      );
-      console.log(temp);
-      setAppointments(temp);
-      dispatch(setLoading(false));
-    } catch (error) {}
+  const getAllAppointments = async () => {
+    if (userInfo) {
+      try {
+        dispatch(setLoading(true));
+        const temp = await getData<Appointment[]>(
+          `/appointments?search=${userInfo?._id}`
+        );
+        setAppointments(temp);
+        dispatch(setLoading(false));
+      } catch (error) {}
+    }
   };
 
   useEffect(() => {
-    getAllAppoint();
-  }, []);
+    getAllAppointments();
+  }, [userInfo]);
 
   const complete = async (ele: Appointment) => {
     try {
@@ -42,7 +43,7 @@ const Appointments = () => {
         loading: "Completing appointment...",
       });
 
-      getAllAppoint();
+      getAllAppointments();
     } catch (error) {
       return error;
     }
@@ -54,11 +55,11 @@ const Appointments = () => {
       {loading ? (
         <Loading />
       ) : (
-        <section className='container appointments-section'>
-          <h2 className='page-heading'>Your Appointments</h2>
+        <section className="container appointments-section">
+          <h2 className="page-heading">Your Appointments</h2>
 
           {appointments.length > 0 ? (
-            <div className='appointments'>
+            <div className="appointments">
               <table>
                 <thead>
                   <tr>
