@@ -25,8 +25,6 @@ const BookAppointment = ({
     time: "",
   });
 
-  console.log(doctor);
-
   const userInfo = useSelector(
     (state: RootState) => state.root.userInfo
   ) as User;
@@ -82,7 +80,7 @@ const BookAppointment = ({
             }}
             className='close-btn'
           />
-          <div className='register-container flex-center book'>
+          <div className='container flex-center book'>
             <form className='register-form'>
               <input
                 type='date'

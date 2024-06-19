@@ -1,0 +1,129 @@
+@import url(app.css);
+
+.container.clinics {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.clinics-card-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.add-clinic-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.add-clinic-form input {
+  margin-bottom: 0;
+  padding: 5px;
+}
+
+.add-clinic-form button {
+  padding: 5px;
+  align-self: flex-end;
+  margin-top: 20px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.form-label {
+  margin-bottom: 0.2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.week-day-input {
+  display: inline-flex;
+  gap: 10px;
+}
+
+.week-day-label {
+  margin-right: 0.2rem;
+}
+
+.add-clinic {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: -30px;
+}
+
+.clinic-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0.8rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #fff;
+  color: #333;
+  width: 250px;
+  height: 300px;
+  overflow-y: auto;
+}
+
+.clinic-card h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #333;
+  font-weight: bold;
+  word-wrap: break-word;
+}
+
+.clinic-card .clinic-label {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: bold;
+}
+
+.clinic-card .clinic-info {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.Modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  width: 60%;
+  height: 60%;
+  max-width: 600px;
+  max-height: 600px;
+  border-radius: 5px;
+  overflow-y: auto;
+  z-index: 3;
+}
+
+.Overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.Modal > button {
+  position: relative;
+  top: -30px;
+  background-color: rgb(155, 5, 15);
+}
+
+.Modal > button:hover {
+  background-color: rgb(234, 11, 26);
+}

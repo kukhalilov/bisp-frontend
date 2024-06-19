@@ -1,39 +1,28 @@
-import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import Loading from "./Loading";
-import { setLoading } from "../redux/reducers/rootSlice";
-import { useDispatch, useSelector } from "react-redux";
 import Empty from "./Empty";
-import "../styles/user.css";
 import Doctor from "../interfaces/Doctor";
-import { getData, putData } from "../api/api";
-import { RootState } from "../redux/store";
+import Clinic from "../interfaces/Clinic";
+import { putData } from "../api/api";
+import DataContainer from "./DataContainer";
+import { weekDays } from "./ClinicCard";
+import { doctorsSortFields } from "../pages/Doctors";
+import { clinicsSortFields } from "../pages/Clinics";
+import { useState } from "react";
 
 const AdminApplications = () => {
-  const [applications, setApplications] = useState<Doctor[] | []>([]);
-  const dispatch = useDispatch();
-  const loading = useSelector((state: RootState) => state.root.loading);
-
-  const getAllApplications = async () => {
-    try {
-      dispatch(setLoading(true));
-      const temp: Doctor[] = await getData(`/doctors/pending-doctors`);
-      setApplications(temp);
-      dispatch(setLoading(false));
-    } catch (error) {}
-  };
-
+  const [refreshKey, setRefreshKey] = useState(0);
+  
   const acceptDoctorApplication = async (id: any) => {
     try {
       const confirm = window.confirm("Are you sure you want to accept?");
       if (confirm) {
         await toast.promise(putData(`/doctors/accept/${id}`), {
+          loading: "Accepting application...",
           success: "Application accepted",
           error: "Error accepting application",
-          loading: "Accepting application...",
         });
-        getAllApplications();
       }
+      setRefreshKey(prevKey => prevKey + 1);
     } catch (error) {
       return error;
     }
@@ -44,97 +33,212 @@ const AdminApplications = () => {
       const confirm = window.confirm("Are you sure you want to reject?");
       if (confirm) {
         await toast.promise(putData(`/doctors/reject/${id}`), {
+          loading: "Rejecting application...",
           success: "Application rejected",
           error: "Error rejecting application",
-          loading: "Rejecting application...",
         });
-        getAllApplications();
       }
+      setRefreshKey(prevKey => prevKey + 1);
     } catch (error) {
       return error;
     }
   };
 
-  useEffect(() => {
-    getAllApplications();
-  }, []);
+  const acceptClinicApplication = async (id: any) => {
+    try {
+      const confirm = window.confirm("Are you sure you want to accept?");
+      if (confirm) {
+        await toast.promise(putData(`/clinics/accept/${id}`), {
+          loading: "Accepting application...",
+          success: "Application accepted",
+          error: "Error accepting application",
+        });
+      }
+      setRefreshKey(prevKey => prevKey + 1);
+    } catch (error) {
+      return error;
+    }
+  };
+
+  const rejectClinicApplication = async (id: any) => {
+    try {
+      const confirm = window.confirm("Are you sure you want to reject?");
+      if (confirm) {
+        await toast.promise(putData(`/clinics/reject/${id}`), {
+          loading: "Rejecting application...",
+          success: "Application rejected",
+          error: "Error rejecting application",
+        });
+      }
+      setRefreshKey(prevKey => prevKey + 1);
+    } catch (error) {
+      return error;
+    }
+  };
+
+  const renderDoctorApplications = (doctors: Doctor[]) => {
+    if (!doctors || doctors.length === 0) {
+      return <Empty />;
+    }
+
+    return (
+      <div className="user-container">
+        <table>
+          <thead>
+            <tr>
+              <th>S.No</th>
+              <th>Pic</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Email</th>
+              <th>Mobile No.</th>
+              <th>Experience</th>
+              <th>Specialization</th>
+              <th>Fee</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {doctors?.map((doctor, i) => {
+              return (
+                <tr key={doctor?._id}>
+                  <td>{i + 1}</td>
+                  <td>
+                    <img
+                      className="user-table-pic"
+                      src={
+                        doctor?.id?.pic ||
+                        "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"
+                      }
+                      alt={doctor?.id?.firstName}
+                    />
+                  </td>
+                  <td>{doctor?.id?.firstName}</td>
+                  <td>{doctor?.id?.lastName}</td>
+                  <td>{doctor?.id?.email}</td>
+                  <td>{doctor?.id?.mobile}</td>
+                  <td>{doctor?.experience}</td>
+                  <td>{doctor?.specialty}</td>
+                  <td>{doctor?.fee}</td>
+                  <td className="action">
+                    <button
+                      className="btn user-btn accept-btn"
+                      onClick={() => {
+                        acceptDoctorApplication(doctor?.id?._id);
+                      }}
+                    >
+                      Accept
+                    </button>
+                    <button
+                      className="btn user-btn reject-btn"
+                      onClick={() => {
+                        rejectDoctorApplication(doctor?.id?._id);
+                      }}
+                    >
+                      Reject
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+
+  const renderClinicApplications = (clinics: Clinic[]) => {
+    if (!clinics || clinics.length === 0) {
+      return <Empty />;
+    }
+
+    return (
+      <div className="user-container">
+        <table>
+          <thead>
+            <tr>
+              <th>S.No</th>
+              <th>Name</th>
+              <th>Address</th>
+              <th>Phone Number</th>
+              <th>Email</th>
+              <th>Working Days</th>
+              <th>Opening Hour</th>
+              <th>Closing Hour</th>
+              <th>Applicant</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {clinics?.map((clinic, i) => {
+              return (
+                <tr key={clinic._id}>
+                  <td>{i + 1}</td>
+                  <td>{clinic.name}</td>
+                  <td>{clinic.address}</td>
+                  <td>{clinic.phoneNumber}</td>
+                  <td>{clinic.email}</td>
+                  <td>
+                    {clinic.workingDays
+                      .map((dayIndex) => weekDays[dayIndex])
+                      .join(", ")}
+                  </td>
+                  <td>{clinic.openingHour}</td>
+                  <td>{clinic.closingHour}</td>
+                  <td>
+                    {clinic.applicant
+                      ? `${clinic.applicant.firstName} ${clinic.applicant.lastName}`
+                      : "Unknown"}
+                  </td>
+                  <td className="action">
+                    <button
+                      className="btn user-btn accept-btn"
+                      onClick={() => {
+                        acceptClinicApplication(clinic._id);
+                      }}
+                    >
+                      Accept
+                    </button>
+                    <button
+                      className="btn user-btn reject-btn"
+                      onClick={() => {
+                        rejectClinicApplication(clinic._id);
+                      }}
+                    >
+                      Reject
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
 
   return (
-    <>
-      {loading ? (
-        <Loading />
-      ) : (
-        <section className='user-section'>
-          <h3 className='home-sub-heading'>All Applications</h3>
-          {applications.length > 0 ? (
-            <div className='user-container'>
-              <table>
-                <thead>
-                  <tr>
-                    <th>S.No</th>
-                    <th>Pic</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Email</th>
-                    <th>Mobile No.</th>
-                    <th>Experience</th>
-                    <th>Specialization</th>
-                    <th>Fee</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {applications?.map((ele, i) => {
-                    return (
-                      <tr key={ele?._id}>
-                        <td>{i + 1}</td>
-                        <td>
-                          <img
-                            className='user-table-pic'
-                            src={
-                              ele?.id?.pic ||
-                              "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"
-                            }
-                            alt={ele?.id?.firstName}
-                          />
-                        </td>
-                        <td>{ele?.id?.firstName}</td>
-                        <td>{ele?.id?.lastName}</td>
-                        <td>{ele?.id?.email}</td>
-                        <td>{ele?.id?.mobile}</td>
-                        <td>{ele?.experience}</td>
-                        <td>{ele?.specialty}</td>
-                        <td>{ele?.fee}</td>
-                        <td className='action'>
-                          <button
-                            className='btn user-btn accept-btn'
-                            onClick={() => {
-                              acceptDoctorApplication(ele?.id?._id);
-                            }}
-                          >
-                            Accept
-                          </button>
-                          <button
-                            className='btn user-btn reject-btn'
-                            onClick={() => {
-                              rejectDoctorApplication(ele?.id?._id);
-                            }}
-                          >
-                            Reject
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <Empty />
-          )}
-        </section>
-      )}
-    </>
+    <section className="user-section">
+      <h3 className="home-sub-heading">All Doctor Applications</h3>
+      <div className="admin-data-container">
+        <DataContainer
+          url="/doctors/pending-doctors"
+          render={renderDoctorApplications}
+          sortFields={doctorsSortFields}
+          key={refreshKey}
+        />
+      </div>
+
+      <h3 className="home-sub-heading">All Clinic Applications</h3>
+      <div className="admin-data-container">
+        <DataContainer
+          url="/clinics/pending-clinics"
+          render={renderClinicApplications}
+          sortFields={clinicsSortFields}
+          key={refreshKey}
+        />
+      </div>
+    </section>
   );
 };
 

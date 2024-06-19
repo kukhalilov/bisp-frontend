@@ -1,12 +1,12 @@
 @import url(app.css);
 
-.user-section {
+.user-section, .admin-data-container {
+  padding: 1rem;
   width: 80vw;
   margin-top: 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: black;
 }
 
 .user-container {
@@ -15,6 +15,7 @@
   width: 100%;
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
+  color: #000;
 }
 
 .home-sub-heading {
@@ -102,31 +103,31 @@ td {
 }
 
 @media (max-width: 1126px) {
-  .user-section {
+  .user-section, .admin-data-container {
     width: 70vw;
   }
 }
 
 @media (max-width: 875px) {
-  .user-section {
+  .user-section, .admin-data-container {
     width: 65vw;
   }
 }
 
 @media (max-width: 700px) {
-  .user-section {
+  .user-section, .admin-data-container {
     width: 60vw;
   }
 }
 
 @media (max-width: 537px) {
-  .user-section {
+  .user-section, .admin-data-container {
     width: 55vw;
   }
 }
 
 @media (max-width: 426px) {
-  .user-section {
+  .user-section, .admin-data-container {
     width: 50vw;
   }
 }

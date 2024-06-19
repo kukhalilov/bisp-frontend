@@ -1,4 +1,4 @@
-import { FaHome, FaList, FaUserMd, FaUsers, FaEnvelope } from "react-icons/fa";
+import { FaHome, FaList, FaUserMd, FaUsers, FaEnvelope, FaHospital } from "react-icons/fa";
 import "../styles/sidebar.css";
 import { NavLink, useNavigate } from "react-router-dom";
 import { MdLogout } from "react-icons/md";
@@ -19,6 +19,11 @@ const SidePanel = () => {
       name: "Users",
       path: "/dashboard/users",
       icon: <FaUsers />,
+    },
+    {
+      name: "Clinics",
+      path: "/dashboard/clinics",
+      icon: <FaHospital />,
     },
     {
       name: "Doctors",

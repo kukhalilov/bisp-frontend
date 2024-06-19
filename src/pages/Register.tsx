@@ -27,7 +27,7 @@ const Register = () => {
 
   const storage = getStorage();
 
-  const onUpload = async (element: File) => {
+  const onUpload = async (element: File): Promise<string> => {
     setLoading(true);
 
     if (element.type === "image/jpeg" || element.type === "image/png") {
@@ -41,6 +41,8 @@ const Register = () => {
         setFile(downloadURL);
 
         setLoading(false);
+
+        return downloadURL;
       } catch (error) {
         console.error("Error uploading file to Firebase Storage:", error);
         setLoading(false);
@@ -49,6 +51,7 @@ const Register = () => {
       setLoading(false);
       toast.error("Please select an image in jpeg or png format");
     }
+    return "";
   };
 
   const formSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
@@ -76,10 +79,11 @@ const Register = () => {
         return toast.error("Passwords do not match");
       }
 
+      let pic = "";
       if (fileInput) {
         const actionedFile = fileInput.files?.[0];
         if (actionedFile) {
-          await onUpload(actionedFile);
+          pic = await onUpload(actionedFile);
         }
       }
 
@@ -89,7 +93,7 @@ const Register = () => {
           lastName,
           email,
           password,
-          pic: file,
+          pic,
         }),
         {
           success: "User registered successfully",

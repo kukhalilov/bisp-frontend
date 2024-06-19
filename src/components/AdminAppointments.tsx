@@ -14,7 +14,7 @@ const AdminAppointments = () => {
   const dispatch = useDispatch();
   const loading = useSelector((state: RootState) => state.root.loading);
 
-  const getAllAppoint = async () => {
+  const getAllAppointments = async () => {
     try {
       dispatch(setLoading(true));
       const temp = await getData<Appointment[]>(`/appointments`);
@@ -24,7 +24,7 @@ const AdminAppointments = () => {
   };
 
   useEffect(() => {
-    getAllAppoint();
+    getAllAppointments();
   }, []);
 
   const complete = async (appointment: Appointment) => {
@@ -38,7 +38,7 @@ const AdminAppointments = () => {
         }
       );
 
-      getAllAppoint();
+      getAllAppointments();
     } catch (error) {
       return error;
     }
@@ -46,74 +46,72 @@ const AdminAppointments = () => {
 
   return (
     <>
-      {loading ? (
-        <Loading />
-      ) : (
-        <section className='user-section'>
-          <h3 className='home-sub-heading'>All Appointments</h3>
-          {appointments.length > 0 ? (
-            <div className='user-container'>
-              <table>
-                <thead>
-                  <tr>
-                    <th>S.No</th>
-                    <th>Doctor</th>
-                    <th>Patient</th>
-                    <th>Appointment Date</th>
-                    <th>Appointment Time</th>
-                    <th>Booking Date</th>
-                    <th>Booking Time</th>
-                    <th>Status</th>
+      <section className="user-section">
+        <h3 className="home-sub-heading">All Appointments</h3>
+        {loading ? (
+          <Loading />
+        ) : appointments.length > 0 ? (
+          <div className="user-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>S.No</th>
+                  <th>Doctor</th>
+                  <th>Patient</th>
+                  <th>Appointment Date</th>
+                  <th>Appointment Time</th>
+                  <th>Booking Date</th>
+                  <th>Booking Time</th>
+                  <th>Status</th>
 
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {appointments?.map((appointment, i) => {
-                    return (
-                      <tr key={appointment?._id}>
-                        <td>{i + 1}</td>
-                        <td>
-                          {appointment?.doctorId?.firstName +
-                            " " +
-                            appointment?.doctorId?.lastName}
-                        </td>
-                        <td>
-                          {appointment?.userId?.firstName +
-                            " " +
-                            appointment?.userId?.lastName}
-                        </td>
-                        <td>{String(appointment?.date)}</td>
-                        <td>{appointment?.time}</td>
-                        <td>{appointment?.createdAt.split("T")[0]}</td>
-                        <td>
-                          {appointment?.updatedAt.split("T")[1].split(".")[0]}
-                        </td>
-                        <td>{appointment?.status}</td>
-                        <td>
-                          <button
-                            className={`btn user-btn accept-btn ${
-                              appointment?.status === "completed"
-                                ? "disable-btn"
-                                : ""
-                            }`}
-                            disabled={appointment?.status === "completed"}
-                            onClick={() => complete(appointment)}
-                          >
-                            Complete
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <Empty />
-          )}
-        </section>
-      )}
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {appointments?.map((appointment, i) => {
+                  return (
+                    <tr key={appointment?._id}>
+                      <td>{i + 1}</td>
+                      <td>
+                        {appointment?.doctorId?.firstName +
+                          " " +
+                          appointment?.doctorId?.lastName}
+                      </td>
+                      <td>
+                        {appointment?.userId?.firstName +
+                          " " +
+                          appointment?.userId?.lastName}
+                      </td>
+                      <td>{String(appointment?.date)}</td>
+                      <td>{appointment?.time}</td>
+                      <td>{appointment?.createdAt.split("T")[0]}</td>
+                      <td>
+                        {appointment?.updatedAt.split("T")[1].split(".")[0]}
+                      </td>
+                      <td>{appointment?.status}</td>
+                      <td>
+                        <button
+                          className={`btn user-btn accept-btn ${
+                            appointment?.status === "completed"
+                              ? "disable-btn"
+                              : ""
+                          }`}
+                          disabled={appointment?.status === "completed"}
+                          onClick={() => complete(appointment)}
+                        >
+                          Complete
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <Empty />
+        )}
+      </section>
     </>
   );
 };

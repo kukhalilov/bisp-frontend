@@ -74,7 +74,7 @@ p {
 .btn {
   color: var(--white);
   background-color: var(--primary-color);
-  font-size: 1rem;
+  font-size: 0.8rem;
   padding: 0.6rem 0.8rem;
   border: none;
   text-transform: uppercase;
@@ -110,9 +110,10 @@ p {
 }
 
 .nothing {
-  font-size: 3rem;
+  font-size: 1rem;
   color: var(--light-gray);
-  height: 100%;
+  height: 100px;
+  gap: 20px;
 }
 
 button[disabled] {

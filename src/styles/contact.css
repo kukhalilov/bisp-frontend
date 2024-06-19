@@ -6,10 +6,6 @@
   width: 40%;
 }
 
-.apply-doctor {
-  height: 90vh;
-}
-
 @media (max-width: 1000px) {
   .contact-container {
     width: 50%;

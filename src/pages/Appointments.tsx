@@ -52,74 +52,69 @@ const Appointments = () => {
   return (
     <>
       <Navbar />
-      {loading ? (
-        <Loading />
-      ) : (
-        <section className="container appointments-section">
-          <h2 className="page-heading">Your Appointments</h2>
-
-          {appointments.length > 0 ? (
-            <div className="appointments">
-              <table>
-                <thead>
-                  <tr>
-                    <th>S.No</th>
-                    <th>Doctor</th>
-                    <th>Patient</th>
-                    <th>Appointment Date</th>
-                    <th>Appointment Time</th>
-                    <th>Booking Date</th>
-                    <th>Booking Time</th>
-                    <th>Status</th>
-                    {userInfo?.isDoctor && <th>Action</th>}
-                  </tr>
-                </thead>
-                <tbody>
-                  {appointments?.map((ele, i) => {
-                    return (
-                      <tr key={ele?._id}>
-                        <td>{i + 1}</td>
+      <section className="container appointments-section">
+        <h2 className="page-heading">Your Appointments</h2>
+        {loading ? (
+          <Loading />
+        ) : !loading && appointments.length > 0 ? (
+          <div className="appointments">
+            <table>
+              <thead>
+                <tr>
+                  <th>S.No</th>
+                  <th>Doctor</th>
+                  <th>Patient</th>
+                  <th>Appointment Date</th>
+                  <th>Appointment Time</th>
+                  <th>Booking Date</th>
+                  <th>Booking Time</th>
+                  <th>Status</th>
+                  {userInfo?.isDoctor && <th>Action</th>}
+                </tr>
+              </thead>
+              <tbody>
+                {appointments?.map((ele, i) => {
+                  return (
+                    <tr key={ele?._id}>
+                      <td>{i + 1}</td>
+                      <td>
+                        {ele?.doctorId?.firstName +
+                          " " +
+                          ele?.doctorId?.lastName}
+                      </td>
+                      <td>
+                        {ele?.userId?.firstName + " " + ele?.userId?.lastName}
+                      </td>
+                      <td>{moment(ele?.date).format("YYYY-MM-DD")}</td>
+                      <td>{ele?.time}</td>
+                      <td>{ele?.createdAt.split("T")[0]}</td>
+                      <td>{ele?.updatedAt.split("T")[1].split(".")[0]}</td>
+                      <td>{ele?.status}</td>
+                      {userInfo?.isDoctor && (
                         <td>
-                          {ele?.doctorId?.firstName +
-                            " " +
-                            ele?.doctorId?.lastName}
+                          {userInfo?._id === ele?.doctorId?._id && (
+                            <button
+                              className={`btn user-btn accept-btn ${
+                                ele?.status === "completed" ? "disable-btn" : ""
+                              }`}
+                              disabled={ele?.status === "completed"}
+                              onClick={() => complete(ele)}
+                            >
+                              Complete
+                            </button>
+                          )}
                         </td>
-                        <td>
-                          {ele?.userId?.firstName + " " + ele?.userId?.lastName}
-                        </td>
-                        <td>{moment(ele?.date).format("YYYY-MM-DD")}</td>
-                        <td>{ele?.time}</td>
-                        <td>{ele?.createdAt.split("T")[0]}</td>
-                        <td>{ele?.updatedAt.split("T")[1].split(".")[0]}</td>
-                        <td>{ele?.status}</td>
-                        {userInfo?.isDoctor && (
-                          <td>
-                            {userInfo?._id === ele?.doctorId?._id && (
-                              <button
-                                className={`btn user-btn accept-btn ${
-                                  ele?.status === "completed"
-                                    ? "disable-btn"
-                                    : ""
-                                }`}
-                                disabled={ele?.status === "completed"}
-                                onClick={() => complete(ele)}
-                              >
-                                Complete
-                              </button>
-                            )}
-                          </td>
-                        )}
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <Empty />
-          )}
-        </section>
-      )}
+                      )}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <Empty />
+        )}
+      </section>
       <Footer />
     </>
   );

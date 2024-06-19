@@ -11,12 +11,15 @@ const Footer = () => {
 
   return (
     <footer>
-      <div className='footer'>
-        <div className='footer-links'>
+      <div className="footer">
+        <div className="footer-links">
           <h3>Links</h3>
           <ul>
             <li>
               <NavLink to={"/"}>Home</NavLink>
+            </li>
+            <li>
+              <NavLink to={"/clinics"}>Clinics</NavLink>
             </li>
             <li>
               <NavLink to={"/doctors"}>Doctors</NavLink>
@@ -49,32 +52,32 @@ const Footer = () => {
             )}
           </ul>
         </div>
-        <div className='social'>
+        <div className="social">
           <h3>Social Links</h3>
           <ul>
-            <li className='facebook'>
+            <li className="facebook">
               <a
-                href='https://www.facebook.com/'
+                href="https://www.facebook.com/"
                 target={"_blank"}
-                rel='noreferrer'
+                rel="noreferrer"
               >
                 <FaFacebookF />
               </a>
             </li>
-            <li className='youtube'>
+            <li className="youtube">
               <a
-                href='https://www.youtube.com/'
+                href="https://www.youtube.com/"
                 target={"_blank"}
-                rel='noreferrer'
+                rel="noreferrer"
               >
                 <FaYoutube />
               </a>
             </li>
-            <li className='instagram'>
+            <li className="instagram">
               <a
-                href='https://www.instagram.com/'
+                href="https://www.instagram.com/"
                 target={"_blank"}
-                rel='noreferrer'
+                rel="noreferrer"
               >
                 <FaInstagram />
               </a>
@@ -82,7 +85,7 @@ const Footer = () => {
           </ul>
         </div>
       </div>
-      <div className='footer-bottom'>
+      <div className="footer-bottom">
         Made by 00012256 © {new Date().getFullYear()}
       </div>
     </footer>

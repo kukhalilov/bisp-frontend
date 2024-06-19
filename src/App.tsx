@@ -18,6 +18,7 @@ import { AxiosError } from "axios";
 const Home = lazy(() => import("./pages/Home"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Appointments = lazy(() => import("./pages/Appointments"));
+const Clinics = lazy(() => import("./pages/Clinics"));
 const Doctors = lazy(() => import("./pages/Doctors"));
 const Profile = lazy(() => import("./pages/Profile"));
 const Notifications = lazy(() => import("./pages/Notifications"));
@@ -64,6 +65,7 @@ const App = () => {
               }
             />
             <Route path='/' element={<Home />} />
+            <Route path='/clinics' element={<Clinics />} />
             <Route path='/doctors' element={<Doctors />} />
             <Route
               path='/appointments'
@@ -102,6 +104,14 @@ const App = () => {
               element={
                 <Admin>
                   <Dashboard type={"users"} />
+                </Admin>
+              }
+            />
+            <Route
+              path='/dashboard/clinics'
+              element={
+                <Admin>
+                  <Dashboard type={"clinics"} />
                 </Admin>
               }
             />

@@ -12,7 +12,7 @@ const Navbar = () => {
   const [iconActive, setIconActive] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const token = localStorage.getItem("token") || "";
+  const token = localStorage.getItem("token");
   const user = useSelector((state: RootState) => state.root.userInfo);
 
   const logoutFunc = () => {
@@ -30,6 +30,9 @@ const Navbar = () => {
         <ul className='nav-links'>
           <li>
             <NavLink to={"/"}>Home</NavLink>
+          </li>
+          <li>
+            <NavLink to={"/clinics"}>Clinics</NavLink>
           </li>
           <li>
             <NavLink to={"/doctors"}>Doctors</NavLink>

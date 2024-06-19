@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "../styles/contact.css";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
@@ -7,6 +6,7 @@ import Footer from "../components/Footer";
 import { postData } from "../api/api";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import "../styles/doctorapply.css";
 
 interface FormDetails {
   specialty: string;
@@ -54,18 +54,15 @@ const ApplyDoctor = () => {
   return (
     <>
       <Navbar />
-      <section
-        className='register-section flex-center apply-doctor'
-        id='contact'
-      >
-        <div className='register-container flex-center contact'>
+      <section>
+        <div className='container'>
           {userInfo && userInfo.isDoctor === true && (
             <h2>You are already a doctor. You can't apply again.</h2>
           )}
           {userInfo && userInfo.isDoctor === false && (
             <>
               <h2 className='form-heading'>Apply for Doctor</h2>
-              <form className='register-form '>
+              <form className='register-form apply-doctor'>
                 <input
                   type='text'
                   name='specialty'

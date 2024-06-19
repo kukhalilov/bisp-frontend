@@ -37,42 +37,39 @@ const Notifications = () => {
   return (
     <>
       <Navbar />
-      {loading ? (
-        <Loading />
-      ) : (
-        <section className='container notif-section'>
-          <h2 className='page-heading'>Your Notifications</h2>
-
-          {notifications.length > 0 ? (
-            <div className='notifications'>
-              <table>
-                <thead>
-                  <tr>
-                    <th>S.No</th>
-                    <th>Content</th>
-                    <th>Date</th>
-                    <th>Time</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {notifications?.map((ele, i) => {
-                    return (
-                      <tr key={ele?._id}>
-                        <td>{i + 1}</td>
-                        <td>{ele?.content}</td>
-                        <td>{ele?.updatedAt?.split("T")[0]}</td>
-                        <td>{ele?.updatedAt?.split("T")[1].split(".")[0]}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <Empty />
-          )}
-        </section>
-      )}
+      <section className="container notif-section">
+        <h2 className="page-heading">Your Notifications</h2>
+        {loading ? (
+          <Loading />
+        ) : !loading && notifications.length > 0 ? (
+          <div className="notifications">
+            <table>
+              <thead>
+                <tr>
+                  <th>S.No</th>
+                  <th>Content</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {notifications?.map((ele, i) => {
+                  return (
+                    <tr key={ele?._id}>
+                      <td>{i + 1}</td>
+                      <td>{ele?.content}</td>
+                      <td>{ele?.updatedAt?.split("T")[0]}</td>
+                      <td>{ele?.updatedAt?.split("T")[1].split(".")[0]}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <Empty />
+        )}
+      </section>
       <Footer />
     </>
   );
