@@ -6,6 +6,7 @@ export default interface Appointment {
   doctorId: User;
   date: Date;
   time: string;
+  duration: number;
   status: "pending" | "completed";
   createdAt: string;
   updatedAt: string;

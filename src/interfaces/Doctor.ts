@@ -6,4 +6,5 @@ export default interface Doctor {
   specialty: string;
   experience: number;
   fee: number;
+  appointments: { date: Date; time: string; duration: number; }[];
 }

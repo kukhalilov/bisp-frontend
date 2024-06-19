@@ -3,6 +3,7 @@ import { useState } from "react";
 import BookAppointment from "../components/BookAppointment";
 import { toast } from "react-hot-toast";
 import Doctor from "../interfaces/Doctor";
+import ScheduleModal from "./ScheduleModal";
 
 interface IProps {
   doctor: Doctor;
@@ -10,6 +11,7 @@ interface IProps {
 
 const DoctorCard: React.FC<IProps> = ({ doctor }) => {
   const [modalOpen, setModalOpen] = useState(false);
+  const [scheduleModalOpen, setScheduleModalOpen] = useState(false);
 
   const handleModal = () => {
     if (localStorage.getItem("token") === "") {
@@ -50,6 +52,12 @@ const DoctorCard: React.FC<IProps> = ({ doctor }) => {
       </button>
       {modalOpen && (
         <BookAppointment setModalOpen={setModalOpen} doctor={doctor} />
+      )}
+      <button className="btn schedule-btn" onClick={() => setScheduleModalOpen(true)}>
+        View Schedule
+      </button>
+      {scheduleModalOpen && (
+        <ScheduleModal setModalOpen={setScheduleModalOpen} doctor={doctor} />
       )}
     </div>
   );

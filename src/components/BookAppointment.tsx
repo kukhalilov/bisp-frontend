@@ -7,10 +7,12 @@ import Doctor from "../interfaces/Doctor";
 import { useSelector } from "react-redux";
 import User from "../interfaces/User";
 import { RootState } from "../redux/store";
+import { duration } from "moment";
 
 interface FormDetails {
   date: string;
   time: string;
+  duration: number;
 }
 
 const BookAppointment = ({
@@ -23,6 +25,7 @@ const BookAppointment = ({
   const [formDetails, setFormDetails] = useState<FormDetails>({
     date: "",
     time: "",
+    duration: 0,
   });
 
   const userInfo = useSelector(
@@ -44,13 +47,16 @@ const BookAppointment = ({
         toast.error("You cannot book an appointment with yourself");
       } else if (formDetails.date === "" || formDetails.time === "") {
         return toast.error("Input field should not be empty");
+      } else if (formDetails.duration < 30) {
+        return toast.error("Duration should be at least 30 minutes")
       } else {
         await toast.promise(
           postData("/appointments/book", {
-            doctorId: doctor?.id,
+            doctorId: doctor?._id,
             userId: userInfo?._id,
             date: formDetails.date,
             time: formDetails.time,
+            duration: Number(formDetails.duration),
             doctorName: doctor?.id?.firstName,
             doctorSurname: doctor?.id?.lastName,
             userName: userInfo.firstName,
@@ -95,6 +101,14 @@ const BookAppointment = ({
                 className='form-input'
                 value={formDetails.time}
                 onChange={inputChange}
+              />
+              <input
+                type='number'
+                name='duration'
+                className='form-input'
+                value={formDetails.duration}
+                onChange={inputChange}
+                placeholder="Enter duration in minutes"
               />
               <button type='submit' className='btn form-btn' onClick={book}>
                 book
